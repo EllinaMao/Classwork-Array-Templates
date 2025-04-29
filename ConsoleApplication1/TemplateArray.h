@@ -32,7 +32,7 @@ public:
 	+Add(index)
 	+Dell(index)
 	*/
-
+	//
 	Array();
 	Array(const Array&other);
 	Array(Array&& other) noexcept;
