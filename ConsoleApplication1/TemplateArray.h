@@ -19,25 +19,41 @@ public:
 	* 
 	* 
 	* ÍÅ ÊÎÐÈÑÒÓªÌÎÑÜ ÊËÀÑÎÌ string  , char* ñòðîêè  àáî âàø âëàñíèé êëàñ My_string
-	copy constructor
-	move constructor
-	operator = (copy)
-	operator = (move)
+	+copy constructor
+	+move constructor
+	+operator = (copy)
+	+operator = (move)
 
-	operator >>
-	operator <<
+	+operator >>
+	+operator <<
 
-	AddLast 
-	DellLast
-	Add(index)
-	Dell(index)
-		
+	+AddLast 
+	+DellLast
+	+Add(index)
+	+Dell(index)
 	*/
 
 	Array();
+	Array(const Array&other);
+	Array(Array&& other) noexcept;
 	void Output()const;
 	~Array();
+
+	Array& operator= (const Array& other);
+	Array& operator=(Array&& other) noexcept;
+
+
+	friend ostream& operator<<(ostream& os, const Array<T>& array);
+	friend istream& operator>>(istream& is, Array<T>& array);
+
 	T& operator[](int index);
+	
+
+	void AddLast(const T&value);
+	void DelleteLast();
+	void AddByIndex(const int index, const T& value);
+	void DelleteByIndex(const int index);
+
 	int GetSize()const/////  inline
 	{
 		return size;
@@ -73,10 +89,11 @@ public:
 		mas = ptr;
 		ptr = nullptr;
 		this->size = size;
-
-
 	}
 };
+
+
+
 template<class T>Array<T>::Array()
 {
 	size = 10;
@@ -108,4 +125,190 @@ template<class T>
 inline T& Array<T>::operator[](int index)
 {
 	return mas[index];
+}
+
+template<class T>
+inline Array<T>::Array(const Array& other)
+{
+	mas = new T[size];
+	size = other.size;
+	for (size_t i = 0; i < size; ++i) 
+	{
+		mas[i] = other.mas[i];
+	}
+
+}
+
+template<class T>
+inline Array<T>::Array(Array&& other) noexcept :mas(other.mas), size(other.size)
+{
+	other.mas = nullptr;
+	other.size = 0;
+}
+
+template<class T>
+inline Array<T>& Array<T>::operator=(const Array& other)
+{
+	if (this == &other) 
+		return *this;
+
+	if (mas) {
+		delete[] mas; 
+	}
+
+	size = other.size; 
+	mas = new T[size];
+
+	for (size_t i = 0; i < size; ++i) {
+		mas[i] = other.mas[i]; 
+	}
+
+	return *this; 
+}
+
+template<class T>
+inline Array<T>& Array<T>::operator=(Array&& other) noexcept
+{
+	if (this == &other)
+		return *this;
+
+	if (mas) {
+		delete[] mas;
+	}
+
+	mas = other.mas;
+	size = other.size;
+
+	other.mas = nullptr;
+	other.size = 0;
+
+	return *this;
+}
+
+template<class T>
+inline ostream& operator<<(ostream& os, const Array<T>& array)
+{
+	if (array.size == 0) {
+		os << "[]";
+		return os;
+	}
+
+	os << "[";
+	for (int i = 0; i < array.size; ++i) {
+		os << array.mas[i];
+		if (i < array.size - 1) {
+			os << ", ";
+		}
+	}
+	os << "]";
+	return os;
+}
+
+
+
+template<class T>
+inline istream& operator>>(istream& is, Array<T>& array)
+{
+	if (array.size == 0) {
+		cout << "Array is empty. Cannot input elements." << endl;
+		return is;
+	}
+
+	cout << "Enter " << array.size << " elements: ";
+	for (int i = 0; i < array.size; ++i) {
+		is >> array.mas[i];
+	}
+	return is;
+}
+
+
+template<class T>
+inline void Array<T>::AddLast(const T& value)
+{
+	if (!mas) {
+		size = 0;
+	}
+
+	int newSize = size + 1;
+	T* temp = new T[newSize];
+
+	for (int i = 0; i < size; i++) {
+		temp[i] = mas[i];
+	}
+
+	temp[size] = value;
+
+	delete[] mas;
+	mas = temp;
+	size++;
+}
+
+
+template<class T>
+inline void Array<T>::DelleteLast()
+{
+	if (size == 0 || !mas) {
+
+		return;
+	}
+
+	T* temp = new T[size - 1];
+
+	for (int i = 0; i < size - 1; i++) {
+		temp[i] = mas[i];
+	}
+
+	delete[] mas;
+
+	mas = temp;
+	size--;
+}
+
+
+template<class T>
+inline void Array<T>::AddByIndex(const int index, const T& value)
+{
+	if (!mas || index < 0 || index >= size) {
+		return;
+	}
+
+	int newSize = size + 1;
+	T* temp = new T[newSize];
+
+	for (int i = 0, j = 0; i < newSize; i++) {
+		if (i == index) {
+			temp[i] = value;
+		}
+		else {
+			temp[i] = mas[j]; 
+			j++;
+		}
+	}
+
+	delete[] mas;
+	mas = temp;
+	size++;
+}
+
+template<class T>
+inline void Array<T>::DelleteByIndex(const int index)
+{
+	if (!mas || index < 0 || index >= size) {
+		return;
+	}
+
+	int newSize = size - 1;
+	T* temp = new T[newSize];
+
+	for (int i = 0, j = 0; i < size; i++) {
+		if (i == index) {
+			continue;
+		}
+		temp[j] = mas[i];
+		j++;
+	}
+
+	delete[] mas;
+	mas = temp;
+	size--;
 }
