@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="14.1 Шаблоны классов.cpp" />
+    <ClCompile Include="TemplateArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TemplateArray.h" />
