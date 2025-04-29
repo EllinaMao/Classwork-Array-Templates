@@ -2,7 +2,7 @@
 #include<time.h>
 #include "TemplateArray.h"
 using namespace std;
-
+	
 
 
 void main()

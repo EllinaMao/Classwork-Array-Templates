@@ -1,24 +1,24 @@
-#pragma once
-/*код шаблона функции следует помещать в заголовочном файле(*.h).То же относится и к шаблонам
-классов.Весь код шаблона класса(и объявление класса,
-	и реализацию его методов) рекомендуется помещать в
-	одном заголовочном файле.*/
+п»ї#pragma once
+/*РєРѕРґ С€Р°Р±Р»РѕРЅР° С„СѓРЅРєС†РёРё СЃР»РµРґСѓРµС‚ РїРѕРјРµС‰Р°С‚СЊ РІ Р·Р°РіРѕР»РѕРІРѕС‡РЅРѕРј С„Р°Р№Р»Рµ(*.h).РўРѕ Р¶Рµ РѕС‚РЅРѕСЃРёС‚СЃСЏ Рё Рє С€Р°Р±Р»РѕРЅР°Рј
+РєР»Р°СЃСЃРѕРІ.Р’РµСЃСЊ РєРѕРґ С€Р°Р±Р»РѕРЅР° РєР»Р°СЃСЃР°(Рё РѕР±СЉСЏРІР»РµРЅРёРµ РєР»Р°СЃСЃР°,
+	Рё СЂРµР°Р»РёР·Р°С†РёСЋ РµРіРѕ РјРµС‚РѕРґРѕРІ) СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РїРѕРјРµС‰Р°С‚СЊ РІ
+	РѕРґРЅРѕРј Р·Р°РіРѕР»РѕРІРѕС‡РЅРѕРј С„Р°Р№Р»Рµ.*/
 #include<iostream>
 
 using namespace std;
 
-template<class T > ///////або template<typename T > різниці немає
+template<class T > ///////Р°Р±Рѕ template<typename T > СЂС–Р·РЅРёС†С– РЅРµРјР°С”
 class Array
 {
 	T* mas = nullptr;   /////  Point* mas,  Person* mas, int* mas ......
-	int size;/////кількість елементів в масиві з запасом
+	int size;/////РєС–Р»СЊРєС–СЃС‚СЊ РµР»РµРјРµРЅС‚С–РІ РІ РјР°СЃРёРІС– Р· Р·Р°РїР°СЃРѕРј
 
-	///////int capacity;/////  реальний розмір динам масиву
+	///////int capacity;/////  СЂРµР°Р»СЊРЅРёР№ СЂРѕР·РјС–СЂ РґРёРЅР°Рј РјР°СЃРёРІСѓ
 public:
-	/*   ДЗ  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	/*   Р”Р—  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	* 
 	* 
-	* НЕ КОРИСТУЄМОСЬ КЛАСОМ string  , char* строки  або ваш власний клас My_string
+	* РќР• РљРћР РРЎРўРЈР„РњРћРЎР¬ РљР›РђРЎРћРњ string  , char* СЃС‚СЂРѕРєРё  Р°Р±Рѕ РІР°С€ РІР»Р°СЃРЅРёР№ РєР»Р°СЃ My_string
 	+copy constructor
 	+move constructor
 	+operator = (copy)
@@ -43,11 +43,37 @@ public:
 	Array& operator=(Array&& other) noexcept;
 
 
-	friend ostream& operator<<(ostream& os, const Array<T>& array);
-	friend istream& operator>>(istream& is, Array<T>& array);
+	friend ostream& operator<<(ostream& os, const Array<T>& array) {
+		if (array.size == 0) {
+			os << "[]";
+			return os;
+		}
+
+		os << "[";
+		for (int i = 0; i < array.size; ++i) {
+			os << array.mas[i];
+			if (i < array.size - 1) {
+				os << ", ";
+			}
+		}
+		os << "]";
+		return os;
+	}
+	friend istream& operator>>(istream& is, Array<T>& array){
+	if (array.size == 0) {
+		cout << "Array is empty" << endl;
+		return is;
+	}
+
+	cout << "Enter " << array.size << " elements: ";
+	for (int i = 0; i < array.size; ++i) {
+		is >> array.mas[i];
+	}
+	return is;
+}
+
 
 	T& operator[](int index);
-	
 
 	void AddLast(const T&value);
 	void DelleteLast();
@@ -97,7 +123,7 @@ public:
 template<class T>Array<T>::Array()
 {
 	size = 10;
-	mas = new T[10];          //////                    mas = new Student[10];    =>   должен быть конструктор по умолчанию
+	mas = new T[10];          //////                    mas = new Student[10];    =>   РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 
 
 	for (int i = 0; i < size; i++)
@@ -109,7 +135,7 @@ template<class T>void Array<T>::Output()const
 {
 	for (int i = 0; i < size; i++)
 	{
-		cout << mas[i] << "\t";  //// int  cout<<int  ////    Product    cout<<Product   треба перегрузити оператор виводу  для Product    ШАБЛОН вимагає перегрузку
+		cout << mas[i] << "\t";  //// int  cout<<int  ////    Product    cout<<Product   С‚СЂРµР±Р° РїРµСЂРµРіСЂСѓР·РёС‚Рё РѕРїРµСЂР°С‚РѕСЂ РІРёРІРѕРґСѓ  РґР»СЏ Product    РЁРђР‘Р›РћРќ РІРёРјР°РіР°С” РїРµСЂРµРіСЂСѓР·РєСѓ
 	}
 	cout << endl << endl;
 }
@@ -126,6 +152,7 @@ inline T& Array<T>::operator[](int index)
 {
 	return mas[index];
 }
+
 
 template<class T>
 inline Array<T>::Array(const Array& other)
@@ -183,42 +210,6 @@ inline Array<T>& Array<T>::operator=(Array&& other) noexcept
 	other.size = 0;
 
 	return *this;
-}
-
-template<class T>
-inline ostream& operator<<(ostream& os, const Array<T>& array)
-{
-	if (array.size == 0) {
-		os << "[]";
-		return os;
-	}
-
-	os << "[";
-	for (int i = 0; i < array.size; ++i) {
-		os << array.mas[i];
-		if (i < array.size - 1) {
-			os << ", ";
-		}
-	}
-	os << "]";
-	return os;
-}
-
-
-
-template<class T>
-inline istream& operator>>(istream& is, Array<T>& array)
-{
-	if (array.size == 0) {
-		cout << "Array is empty. Cannot input elements." << endl;
-		return is;
-	}
-
-	cout << "Enter " << array.size << " elements: ";
-	for (int i = 0; i < array.size; ++i) {
-		is >> array.mas[i];
-	}
-	return is;
 }
 
 
